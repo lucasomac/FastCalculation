@@ -7,7 +7,7 @@ import android.widget.RadioButton
 import android.widget.TextView
 import br.edu.scl.ifsp.sdm.fastcalculation.game.Extras.EXTRA_SETTINGS
 import br.edu.scl.ifsp.sdm.fastcalculation.R
-import br.edu.scl.ifsp.sdm.fastcalculation.game.Settings
+import br.edu.scl.ifsp.sdm.fastcalculation.game.models.Settings
 import br.edu.scl.ifsp.sdm.fastcalculation.databinding.ActivitySettingsBinding
 
 class SettingsActivity : AppCompatActivity() {

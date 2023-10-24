@@ -10,40 +10,44 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.core.os.BundleCompat
 import br.edu.scl.ifsp.sdm.fastcalculation.game.CalculationGame
 import br.edu.scl.ifsp.sdm.fastcalculation.game.Extras.EXTRA_SETTINGS
 import br.edu.scl.ifsp.sdm.fastcalculation.R
-import br.edu.scl.ifsp.sdm.fastcalculation.game.Settings
+import br.edu.scl.ifsp.sdm.fastcalculation.game.models.Settings
 import br.edu.scl.ifsp.sdm.fastcalculation.databinding.FragmentGameBinding
+import br.edu.scl.ifsp.sdm.fastcalculation.game.Extras.EXTRA_RESULT_GAME
+import br.edu.scl.ifsp.sdm.fastcalculation.game.models.ScoreBoardData
 
 class GameFragment : Fragment() {
     private lateinit var fragmentGameBinding: FragmentGameBinding
 
     private lateinit var settings: Settings
+    private lateinit var scoreBoardData: ScoreBoardData
     private lateinit var calculationGame: CalculationGame
     private var currentRound: CalculationGame.Round? = null
     private var startRoundTime = 0L
     private var totalGameTime = 0L
     private var hits = 0
-    private val roundDeadLineHandler = object :Handler(Looper.getMainLooper()){
+    private val roundDeadLineHandler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
-                totalGameTime += settings.roundInterval
-                play()
+            totalGameTime += settings.roundInterval
+            play()
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            settings = it.getParcelable(EXTRA_SETTINGS) ?: Settings()
+            settings =
+                BundleCompat.getParcelable(it, EXTRA_SETTINGS, Settings::class.java) ?: Settings()
         }
         calculationGame = CalculationGame(settings.rounds)
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         fragmentGameBinding = FragmentGameBinding.inflate(inflater, container, false)
         val onClickListener = OnClickListener {
@@ -72,16 +76,15 @@ class GameFragment : Fragment() {
         private const val MSG_ROUND_DEADLINE = 0
 
         @JvmStatic
-        fun newInstance(settings: Settings) =
-            GameFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(EXTRA_SETTINGS, settings)
+        fun newInstance(settings: Settings) = GameFragment().apply {
+            arguments = Bundle().apply {
+                putParcelable(EXTRA_SETTINGS, settings)
 
-                }
             }
+        }
     }
 
-    private fun play(){
+    private fun play() {
         currentRound = calculationGame.nextRound()
         if (currentRound != null) {
             fragmentGameBinding.apply {
@@ -101,11 +104,18 @@ class GameFragment : Fragment() {
                 val points = hits * 10f / (totalGameTime / 1000L)
                 "%.1f".format(points).also {
                     questionTv.text = it
+                    scoreBoardData = ScoreBoardData(it)
                 }
-                alternativeOneBt.visibility = View.GONE
-                alternativeTwoBt.visibility = View.GONE
-                alternativeThreeBt.visibility = View.GONE
+                val bundle = Bundle().apply {
+                    this.putParcelable(EXTRA_RESULT_GAME, scoreBoardData)
+                }
+                val scoreBoarFragment = ScoreBoardFragment().apply {
+                    arguments = bundle
+                }
+                val fragmentManager = requireActivity().supportFragmentManager
+                val transaction = fragmentManager.beginTransaction()
 
+                transaction.replace(R.id.gameFl, scoreBoarFragment).commit()
             }
         }
     }

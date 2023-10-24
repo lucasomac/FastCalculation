@@ -22,4 +22,6 @@
     <string name="welcome">Welcome</string>
     <string name="play">Play</string>
     <string name="points">Points</string>
+    <string name="play_again">Jogar novamente?\n</string>
+    <string name="no_points">-</string>
 </resources>

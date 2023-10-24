@@ -8,7 +8,7 @@ import androidx.core.os.BundleCompat
 import br.edu.scl.ifsp.sdm.fastcalculation.game.Extras.EXTRA_SETTINGS
 import br.edu.scl.ifsp.sdm.fastcalculation.OnPlayGame
 import br.edu.scl.ifsp.sdm.fastcalculation.R
-import br.edu.scl.ifsp.sdm.fastcalculation.game.Settings
+import br.edu.scl.ifsp.sdm.fastcalculation.game.models.Settings
 import br.edu.scl.ifsp.sdm.fastcalculation.databinding.ActivityGameBinding
 
 class GameActivity : AppCompatActivity(), OnPlayGame {

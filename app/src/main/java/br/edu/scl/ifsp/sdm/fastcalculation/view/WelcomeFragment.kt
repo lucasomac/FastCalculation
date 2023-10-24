@@ -8,10 +8,11 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.BundleCompat
 import br.edu.scl.ifsp.sdm.fastcalculation.game.Extras.EXTRA_SETTINGS
 import br.edu.scl.ifsp.sdm.fastcalculation.OnPlayGame
 import br.edu.scl.ifsp.sdm.fastcalculation.R
-import br.edu.scl.ifsp.sdm.fastcalculation.game.Settings
+import br.edu.scl.ifsp.sdm.fastcalculation.game.models.Settings
 import br.edu.scl.ifsp.sdm.fastcalculation.databinding.FragmentWelcomeBinding
 
 
@@ -22,7 +23,8 @@ class WelcomeFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-        settings = it.getParcelable(EXTRA_SETTINGS)?: Settings()
+            settings =
+                BundleCompat.getParcelable(it, EXTRA_SETTINGS, Settings::class.java) ?: Settings()
 
         }
         setHasOptionsMenu(true)
@@ -31,15 +33,14 @@ class WelcomeFragment : Fragment() {
 
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         fragmentWelcomeBinding = FragmentWelcomeBinding.inflate(inflater, container, false)
         "${getString(R.string.welcome)},${settings.playerName}!".also {
             fragmentWelcomeBinding.welcomeTv.text = it
         }
-        fragmentWelcomeBinding.welcomeTv.text= "Welcome, !${settings.playerName}"
-        fragmentWelcomeBinding.playerBt.setOnClickListener{
+        "Welcome, !${settings.playerName}".also { fragmentWelcomeBinding.welcomeTv.text = it }
+        fragmentWelcomeBinding.playerBt.setOnClickListener {
             (context as OnPlayGame).onPlayGame()
         }
         return fragmentWelcomeBinding.root
@@ -48,17 +49,16 @@ class WelcomeFragment : Fragment() {
     companion object {
 
         @JvmStatic
-        fun newInstance(settings: Settings) =
-            WelcomeFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(EXTRA_SETTINGS, settings)
+        fun newInstance(settings: Settings) = WelcomeFragment().apply {
+            arguments = Bundle().apply {
+                putParcelable(EXTRA_SETTINGS, settings)
 
-                }
             }
+        }
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        menu.findItem(R.id.restartGameMi).isVisible=false
+        menu.findItem(R.id.restartGameMi).isVisible = false
     }
 }

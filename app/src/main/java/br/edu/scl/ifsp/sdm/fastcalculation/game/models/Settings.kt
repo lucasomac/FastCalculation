@@ -1,4 +1,4 @@
-package br.edu.scl.ifsp.sdm.fastcalculation.game
+package br.edu.scl.ifsp.sdm.fastcalculation.game.models
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
